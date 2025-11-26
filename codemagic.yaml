@@ -1,44 +1,34 @@
 workflows:
-  guaranteed-ipa:
-    name: Guaranteed IPA
+  real-ipa:
+    name: Real IPA Build
     environment:
-      flutter: "3.16.9"
-      xcode: "15.2"
+      flutter: stable
+      xcode: latest
     scripts:
-      - name: Build IPA
+      - name: Create Project
         script: |
-          # Create minimal app
-          mkdir ipa_project
-          cd ipa_project
+          flutter create --org com.realipa --platforms=ios real_ipa_app
+          cd real_ipa_app
           
-          cat > pubspec.yaml << 'EOL'
-name: ipa_project
-environment: {sdk: ">=3.0.0 <4.0.0"}
-dependencies: {flutter: {sdk: flutter}}
-EOL
-
-          mkdir lib
-          cat > lib/main.dart << 'EOL'
-import 'package:flutter/material.dart';
-void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Text('IPA READY')))));
-EOL
-
-          # Create iOS project
-          flutter create --org com.guaranteed --platforms=ios --overwrite .
-          
-          # Build IPA
-          flutter build ipa --release --no-codesign --verbose
-          
-          echo "=== FINAL CHECK ==="
+      - name: Build REAL IPA
+        script: |
+          cd real_ipa_app
+          # This command creates .ipa file
+          flutter build ipa --release --no-codesign
+          echo "=== CHECKING FOR IPA ==="
           find . -name "*.ipa" -type f
-          echo "IPA_FILES_ABOVE"
+          ls -la build/ios/ipa/
           
-      - name: Create Dummy IPA if needed
+      - name: Force IPA Creation
         script: |
-          mkdir -p artifacts
-          echo "If no IPA above, build requires code signing" > artifacts/readme.txt
-          echo "Contact Apple Developer account for full IPA" > artifacts/solution.txt
+          cd real_ipa_app
+          # If above fails, use xcodebuild directly
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath build/Runner.xcarchive archive
+          xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportPath build/ipa -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates
+          echo "=== XCODE IPA ==="
+          find . -name "*.ipa" -type f
     
     artifacts:
-      - ipa_project/build/ios/ipa/*.ipa
-      - artifacts/*
+      - real_ipa_app/build/ios/ipa/*.ipa
+      - real_ipa_app/ios/build/ipa/*.ipa

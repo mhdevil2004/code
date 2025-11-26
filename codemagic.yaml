@@ -1,0 +1,34 @@
+workflows:
+  ios-workflow:
+    name: iOS Build Workflow
+    environment:
+      groups:
+        # Add your App Store Connect API key and certificate files here
+        # - app_store_connect
+      vars:
+        XCODE_PROJECT: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        BUNDLE_ID: "com.yourcompany.hello-world-ios"
+        FLUTTER_VERSION: "3.16.0"  # Use stable version
+    
+    scripts:
+      - name: Set up Flutter
+        script: |
+          flutter doctor -v
+          flutter pub get
+      
+      - name: Build iOS IPA
+        script: |
+          flutter build ipa --release --export-options-plist=ExportOptions.plist
+    
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - flutter_drive.log
+    
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true

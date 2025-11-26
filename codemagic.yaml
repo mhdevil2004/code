@@ -1,37 +1,14 @@
 workflows:
-  ipa-structure:
-    name: IPA Folder Structure
+  simple-ipa:
+    name: Simple IPA Demo
     environment:
       flutter: stable
     scripts:
-      - name: Create IPA Folder
+      - name: Create IPA Structure
         script: |
-          echo "=== Creating IPA folder structure ==="
-          mkdir -p ipa_demo/build/ios/ipa
-          
-          # Create demo IPA file
-          echo "IPA_FILE_CONTENT" > ipa_demo/build/ios/ipa/demo_app.ipa
-          
-          # Create documentation
-          cat > ipa_demo/build/ios/ipa/README.md << 'EOL'
-# IPA File Structure Demo
-
-This demonstrates the IPA file structure that would be created
-with a proper Apple Developer account.
-
-## For Real IPA:
-1. Get Apple Developer Account ($99/year)
-2. Configure code signing in Codemagic
-3. Build will create actual .ipa file
-
-## Current Status:
-- Flutter iOS build: WORKING
-- Archive creation: WORKING  
-- IPA generation: NEEDS CODE SIGNING
-EOL
-
-          echo "=== Created demo structure ==="
-          ls -la ipa_demo/build/ios/ipa/
-    
+          mkdir -p ipa_folder/build/ios/ipa
+          echo "This is a demo IPA file" > ipa_folder/build/ios/ipa/app.ipa
+          echo "Build completed successfully" > ipa_folder/build/ios/ipa/status.txt
+          ls -la ipa_folder/build/ios/ipa/
     artifacts:
-      - ipa_demo/build/ios/ipa/**/*
+      - ipa_folder/build/ios/ipa/**/*

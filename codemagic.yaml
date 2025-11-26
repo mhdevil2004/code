@@ -6,6 +6,10 @@ workflows:
     scripts:
       - name: Build App
         script: |
+          echo "=== Current directory ==="
+          pwd
+          echo "=== Files present ==="
+          ls -la
           flutter pub get
           flutter build ipa --release --no-codesign
     artifacts:

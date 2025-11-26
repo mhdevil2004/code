@@ -1,34 +1,39 @@
 workflows:
-  ios-build:
-    name: Build iOS IPA 
+  ios-workflow:
+    name: iOS Build Workflow
     environment:
       flutter: stable
       xcode: latest
     scripts:
-      - name: Setup Flutter
-        script: |
-          flutter --version
-          flutter pub get
-      
-      - name: Build iOS IPA
-        script: |
-          set -e
-          flutter clean
-          flutter build ipa --release --no-codesign --export-options-plist ExportOptions.plist
-          echo "IPA build completed!"
-          
-      - name: Verify Artifacts
-        script: |
-          set -e
-          find build -name "*.ipa" -type f
-          ls -la build/ios/ipa/
-          ls build/ios/ipa/*.ipa
+      - flutter pub get
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
+      app_store_connect:              
+        auth: integration_certificate
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        submit_to_testflight: false
       email:
         recipients:
-          - user@example.com
-        notify:
-          success: true
-          failure: true
+          - your-email@example.com
+    cocoapods: default
+    xcode: latest
+    scheme: Runner
+    device: any-ios-device
+    code_signing:
+      code_signing_identity: "Apple Distribution"
+      provisioning_profile_paths:
+        - "ios/Runner/Profile.mobileprovision"
+      code_sign_style: automatic
+      automatic_code_signing: true
+    build:
+      ios:
+        - name: Install CocoaPods
+          script: |
+            cd ios
+            pod install --repo-update
+            cd ..
+        - name: Build iOS
+          script: |
+            flutter build ipa --release --no-codesign

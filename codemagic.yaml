@@ -1,6 +1,6 @@
 workflows:
   ios-build:
-    name: Build iOS IPA
+    name: Build iOS IPA 
     environment:
       flutter: stable
       xcode: latest
@@ -12,13 +12,17 @@ workflows:
       
       - name: Build iOS IPA
         script: |
-          flutter build ipa --release --no-codesign
+          set -e
+          flutter clean
+          flutter build ipa --release --no-codesign --export-options-plist ExportOptions.plist
           echo "IPA build completed!"
           
       - name: Verify Artifacts
         script: |
+          set -e
           find build -name "*.ipa" -type f
           ls -la build/ios/ipa/
+          ls build/ios/ipa/*.ipa
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:

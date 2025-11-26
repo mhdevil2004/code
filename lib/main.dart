@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Hello iOS App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Hello iOS App'),
@@ -42,38 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Hello World!',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              'You have pushed the button this many times:',
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'This app runs on iOS devices',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
             Text(
-              'Counter: $_counter',
+              '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 30),
-            Container(
-              width: 100,
-              height: 100,
-              color: Colors.blue,
-              child: const Icon(
-                Icons.phone_iphone,
-                color: Colors.white,
-                size: 50,
-              ),
             ),
           ],
         ),

@@ -1,16 +1,15 @@
 workflows:
-  simple-build:
-    name: Simple Build
+  ipa-force:
+    name: Force IPA Creation
     environment:
       flutter: stable
     scripts:
-      - name: Create App
+      - name: Build with IPA
         script: |
-          echo "Creating simple Flutter app..."
-          flutter create --org com.simple --platforms=ios simple_app
-          cd simple_app
-          flutter build ios --no-codesign --debug
-          echo "BUILD_COMPLETED" > ../build_success.txt
+          flutter create --org com.ipa --platforms=ios ipa_app
+          cd ipa_app
+          flutter build ipa --release --no-codesign
+          echo "IPA_BUILD_COMPLETE" > ../build_status.txt
     artifacts:
-      - build_success.txt
-      - simple_app/build/ios/**/*
+      - ipa_app/build/ios/ipa/*.ipa
+      - build_status.txt

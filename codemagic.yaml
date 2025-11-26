@@ -25,9 +25,9 @@ with a proper Apple Developer account.
 3. Build will create actual .ipa file
 
 ## Current Status:
-- Flutter iOS build: ✅ WORKING
-- Archive creation: ✅ WORKING  
-- IPA generation: ❌ NEEDS CODE SIGNING
+- Flutter iOS build: WORKING
+- Archive creation: WORKING  
+- IPA generation: NEEDS CODE SIGNING
 EOL
 
           echo "=== Created demo structure ==="

@@ -1,6 +1,6 @@
 workflows:
   ios-build:
-    name: Build iOS IPA workflows
+    name: Build iOS IPA
     environment:
       flutter: stable
       xcode: latest
@@ -12,18 +12,21 @@ workflows:
       
       - name: Generate iOS Files
         script: |
-          echo "=== Current iOS structure ==="
-          ls -la ios/ || echo "No ios folder found"
-          
-          echo "=== Generating iOS project files ==="
           flutter create --org com.ipa . --platforms=ios --overwrite
-          
-          echo "=== iOS structure after generation ==="
-          ls -la ios/
-          find ios/ -name "*.xcodeproj" -type d
       
       - name: Build iOS IPA
         script: |
           flutter build ipa --release --no-codesign --verbose
+          
+          echo "=== FORCING ARTIFACTS CREATION ==="
+          ls -la build/ios/ipa/ || echo "No ipa folder"
+          find . -name "*.ipa" -type f || echo "No IPA files found"
+          
+          # Create a test file to verify artifacts work
+          echo "IPA_BUILD_SUCCESS" > ipa_success.txt
+          mkdir -p artifacts
+          echo "Artifacts should be here" > artifacts/README.txt
     artifacts:
-      - build/ios/ipa/*.ipa
+      - build/ios/ipa/**/*
+      - ipa_success.txt
+      - artifacts/**/*

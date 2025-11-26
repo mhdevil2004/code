@@ -1,51 +1,77 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Hello World iOS</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>hello_world_ios</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-</dict>
-</plist>
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Hello World iOS',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'Hello World iOS App'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Hello World!',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'This app runs on both Android and iOS',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Counter: $_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}

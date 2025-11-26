@@ -1,29 +1,26 @@
 workflows:
-  ios-workflow:
-    name: iOS Build Workflow
+  hello-world-ios:
+    name: Hello World iOS Build
     environment:
       groups:
-        # Add your App Store Connect API key and certificate files here
-        # - app_store_connect
+        # Add your app_store_connect group here later
       vars:
-        XCODE_PROJECT: "Runner.xcworkspace"
-        XCODE_SCHEME: "Runner"
         BUNDLE_ID: "com.yourcompany.hello-world-ios"
-        FLUTTER_VERSION: "3.16.0"  # Use stable version
+        XCODE_SCHEME: "Runner"
+        XCODE_WORKSPACE: "Runner.xcworkspace"
     
     scripts:
-      - name: Set up Flutter
+      - name: Get Flutter packages
         script: |
-          flutter doctor -v
           flutter pub get
       
-      - name: Build iOS IPA
+      - name: Build iOS
         script: |
-          flutter build ipa --release --export-options-plist=ExportOptions.plist
+          flutter build ipa --release --no-codesign
     
     artifacts:
       - build/ios/ipa/*.ipa
-      - flutter_drive.log
+      - build/ios/archives/*.xcarchive
     
     publishing:
       email:

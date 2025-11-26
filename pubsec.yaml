@@ -1,5 +1,5 @@
 name: hello_world_ios
-description: A Flutter app that runs on both Android and iOS
+description: "A Flutter app that runs on both Android and iOS"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -19,4 +19,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:

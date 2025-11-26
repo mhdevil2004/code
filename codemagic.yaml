@@ -1,16 +1,30 @@
 workflows:
-  build-ios:
+  ios-build:
     name: Build iOS IPA
     environment:
       flutter: stable
+      xcode: latest
     scripts:
-      - name: Build App
+      - name: Setup Flutter
         script: |
-          echo "=== Current directory ==="
-          pwd
-          echo "=== Files present ==="
-          ls -la
+          flutter --version
           flutter pub get
+      
+      - name: Build iOS IPA
+        script: |
           flutter build ipa --release --no-codesign
+          echo "IPA build completed!"
+          
+      - name: Verify Artifacts
+        script: |
+          find build -name "*.ipa" -type f
+          ls -la build/ios/ipa/
     artifacts:
       - build/ios/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - user@example.com
+        notify:
+          success: true
+          failure: true

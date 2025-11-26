@@ -1,31 +1,9 @@
 workflows:
-  hello-world-ios:
-    name: Hello World iOS Build
+  build-ios:
+    name: Build iOS IPA
     environment:
-      groups:
-        # Add your app_store_connect group here later
-      vars:
-        BUNDLE_ID: "com.yourcompany.hello-world-ios"
-        XCODE_SCHEME: "Runner"
-        XCODE_WORKSPACE: "Runner.xcworkspace"
-    
+      flutter: stable
     scripts:
-      - name: Get Flutter packages
-        script: |
-          flutter pub get
-      
-      - name: Build iOS
-        script: |
-          flutter build ipa --release --no-codesign
-    
+      - flutter build ipa --release --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
-      - build/ios/archives/*.xcarchive
-    
-    publishing:
-      email:
-        recipients:
-          - your-email@example.com
-        notify:
-          success: true
-          failure: true

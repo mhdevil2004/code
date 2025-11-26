@@ -1,18 +1,12 @@
 workflows:
   build-ios:
-    name: Build iOS IPA last
+    name: Build iOS IPA
     environment:
       flutter: stable
     scripts:
-      - name: Debug Structure
+      - name: Build App
         script: |
-          echo "=== Current directory ==="
-          pwd
-          echo "=== Files in root ==="
-          ls -la
-          echo "=== Looking for pubspec.yaml ==="
-          find . -name "pubspec.yaml" -type f
-          echo "=== Looking for iOS folder ==="
-          find . -name "ios" -type d
+          flutter pub get
+          flutter build ipa --release --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa

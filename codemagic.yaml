@@ -2,17 +2,20 @@ workflows:
   build-ios:
     name: Build iOS IPA
     environment:
-      flutter: stable
+      flutter: "3.16.0"  # Specific version
       xcode: latest
+      cocoapods: default
     scripts:
-      - name: Set up Flutter
+      - name: Setup
         script: |
           flutter --version
           flutter pub get
-          flutter analyze
-      
+          
       - name: Build iOS
         script: |
-          flutter build ipa --release --no-codesign
+          cd ios
+          pod install
+          cd ..
+          flutter build ipa --release --no-codesign --verbose
     artifacts:
       - build/ios/ipa/*.ipa

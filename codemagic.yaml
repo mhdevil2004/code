@@ -1,39 +1,29 @@
 workflows:
-  ios-workflow:
-    name: iOS Build Workflow
+  ios-build:
+    name: Build iOS IPA workflows
     environment:
       flutter: stable
       xcode: latest
     scripts:
-      - flutter pub get
+      - name: Setup Flutter
+        script: |
+          flutter --version
+          flutter pub get
+      
+      - name: Generate iOS Files
+        script: |
+          echo "=== Current iOS structure ==="
+          ls -la ios/ || echo "No ios folder found"
+          
+          echo "=== Generating iOS project files ==="
+          flutter create --org com.ipa . --platforms=ios --overwrite
+          
+          echo "=== iOS structure after generation ==="
+          ls -la ios/
+          find ios/ -name "*.xcodeproj" -type d
+      
+      - name: Build iOS IPA
+        script: |
+          flutter build ipa --release --no-codesign --verbose
     artifacts:
       - build/ios/ipa/*.ipa
-    publishing:
-      app_store_connect:              
-        auth: integration_certificate
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_testflight: false
-      email:
-        recipients:
-          - your-email@example.com
-    cocoapods: default
-    xcode: latest
-    scheme: Runner
-    device: any-ios-device
-    code_signing:
-      code_signing_identity: "Apple Distribution"
-      provisioning_profile_paths:
-        - "ios/Runner/Profile.mobileprovision"
-      code_sign_style: automatic
-      automatic_code_signing: true
-    build:
-      ios:
-        - name: Install CocoaPods
-          script: |
-            cd ios
-            pod install --repo-update
-            cd ..
-        - name: Build iOS
-          script: |
-            flutter build ipa --release --no-codesign

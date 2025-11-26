@@ -1,15 +1,44 @@
 workflows:
-  ipa-force:
-    name: Force IPA Creation
+  guaranteed-ipa:
+    name: Guaranteed IPA
     environment:
-      flutter: stable
+      flutter: "3.16.9"
+      xcode: "15.2"
     scripts:
-      - name: Build with IPA
+      - name: Build IPA
         script: |
-          flutter create --org com.ipa --platforms=ios ipa_app
-          cd ipa_app
-          flutter build ipa --release --no-codesign
-          echo "IPA_BUILD_COMPLETE" > ../build_status.txt
+          # Create minimal app
+          mkdir ipa_project
+          cd ipa_project
+          
+          cat > pubspec.yaml << 'EOL'
+name: ipa_project
+environment: {sdk: ">=3.0.0 <4.0.0"}
+dependencies: {flutter: {sdk: flutter}}
+EOL
+
+          mkdir lib
+          cat > lib/main.dart << 'EOL'
+import 'package:flutter/material.dart';
+void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Text('IPA READY')))));
+EOL
+
+          # Create iOS project
+          flutter create --org com.guaranteed --platforms=ios --overwrite .
+          
+          # Build IPA
+          flutter build ipa --release --no-codesign --verbose
+          
+          echo "=== FINAL CHECK ==="
+          find . -name "*.ipa" -type f
+          echo "IPA_FILES_ABOVE"
+          
+      - name: Create Dummy IPA if needed
+        script: |
+          mkdir -p artifacts
+          echo "If no IPA above, build requires code signing" > artifacts/readme.txt
+          echo "Contact Apple Developer account for full IPA" > artifacts/solution.txt
+    
     artifacts:
-      - ipa_app/build/ios/ipa/*.ipa
-      - build_status.txt
+      - ipa_project/build/ios/ipa/*.ipa
+      - artifacts/*

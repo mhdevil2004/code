@@ -1,21 +1,18 @@
 workflows:
   build-ios:
-    name: Build iOS IPA
+    name: Build iOS IPA last
     environment:
-      flutter: "3.16.0"  # Specific version
-      xcode: latest
-      cocoapods: default
+      flutter: stable
     scripts:
-      - name: Setup
+      - name: Debug Structure
         script: |
-          flutter --version
-          flutter pub get
-          
-      - name: Build iOS
-        script: |
-          cd ios
-          pod install
-          cd ..
-          flutter build ipa --release --no-codesign --verbose
+          echo "=== Current directory ==="
+          pwd
+          echo "=== Files in root ==="
+          ls -la
+          echo "=== Looking for pubspec.yaml ==="
+          find . -name "pubspec.yaml" -type f
+          echo "=== Looking for iOS folder ==="
+          find . -name "ios" -type d
     artifacts:
       - build/ios/ipa/*.ipa

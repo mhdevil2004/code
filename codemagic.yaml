@@ -1,32 +1,44 @@
 workflows:
-  ios-build:
-    name: Build iOS IPA
+  real-ipa-build:
+    name: Real IPA Build
     environment:
-      flutter: stable
-      xcode: latest
+      flutter: "3.16.0"  # Specific version
+      xcode: "15.2"      # Specific version
+      cocoapods: "1.15.2"
+    
     scripts:
-      - name: Setup Flutter
+      - name: Clean Setup
         script: |
-          flutter --version
-          flutter pub get
-      
-      - name: Generate iOS Files
+          echo "=== CLEAN SETUP ==="
+          flutter clean
+          rm -rf ios android
+          
+      - name: Create Fresh iOS Project
         script: |
-          flutter create --org com.ipa . --platforms=ios --overwrite
-      
-      - name: Build iOS IPA
+          echo "=== CREATING iOS PROJECT ==="
+          flutter create --org com.yourcompany --platforms=ios --overwrite .
+          ls -la ios/
+          
+      - name: Build REAL IPA
         script: |
+          echo "=== BUILDING REAL IPA ==="
+          cd ios
+          pod install || echo "Pods might already be installed"
+          cd ..
           flutter build ipa --release --no-codesign --verbose
           
-          echo "=== FORCING ARTIFACTS CREATION ==="
-          ls -la build/ios/ipa/ || echo "No ipa folder"
-          find . -name "*.ipa" -type f || echo "No IPA files found"
-          
-          # Create a test file to verify artifacts work
-          echo "IPA_BUILD_SUCCESS" > ipa_success.txt
-          mkdir -p artifacts
-          echo "Artifacts should be here" > artifacts/README.txt
+      - name: Verify REAL IPA
+        script: |
+          echo "=== CHECKING FOR REAL IPA ==="
+          find . -name "*.ipa" -type f
+          ls -la build/ios/ipa/
+          if [ -f "build/ios/ipa/*.ipa" ]; then
+            echo "REAL_IPA_CREATED" > IPA_SUCCESS.txt
+          else
+            echo "NO_IPA_FOUND" > IPA_FAILED.txt
+          fi
+    
     artifacts:
       - build/ios/ipa/**/*
-      - ipa_success.txt
-      - artifacts/**/*
+      - IPA_SUCCESS.txt
+      - IPA_FAILED.txt
